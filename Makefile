@@ -1,4 +1,7 @@
+# Export Standalone Android Toolchains path to STANDALONE_NDK
+
 CC=clang++
+ACC=$(STANDALONE_NDK)/bin/clang++
 
 all: clean trimfile
 
@@ -10,3 +13,6 @@ configure:
 
 trimfile: configure
 	@$(CC) trimfile.cpp -o out/trimfile
+
+trimfile_android: configure
+	@$(ACC) trimfile.cpp -o out/trimfile -std=c++11 -pie
