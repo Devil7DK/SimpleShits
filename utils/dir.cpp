@@ -15,16 +15,6 @@ string real_path;
 void process_directory(string directory, vector<string>* files);
 void process_entity(struct dirent* entity, string parent, vector<string>* files);
 
-int main(int argc, char** argv) {
-	if (argc < 3)
-		return 1;
-	string dir = argv[1];
-	vector<string> files = find_files(dir, atoi(argv[2]));
-	for (string i : files)
-		printf("%s\n", i.c_str());
-	return 0;
-}
-
 bool dir_exists(const char* path) {
 	struct stat statbuf;
 	int isDir = 0;

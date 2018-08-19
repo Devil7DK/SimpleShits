@@ -10,7 +10,7 @@ clean:
 	@rm -rf out
 
 configure:
-	@mkdir -p out
+	@mkdir -p outc
 
 trimfile: configure
 	@$(CC) trimfile.cpp -o out/trimfile && echo $(SUCCESS)
@@ -23,3 +23,6 @@ reader: configure
 
 extracter: configure
 	@$(CC) archive/extracter.cpp -o out/extracter -larchive && echo $(SUCCESS)
+
+compresser: configure
+	@$(CC) archive/compresser.cpp utils/dir.cpp -o out/compresser -larchive -I./ && echo $(SUCCESS)
