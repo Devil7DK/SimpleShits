@@ -2,8 +2,9 @@
 
 CC=clang++
 ACC=$(STANDALONE_NDK)/bin/clang++
+SUCCESS="Successfully compiled..."
 
-all: clean trimfile
+all: clean trimfile reader extracter
 
 clean:
 	@rm -rf out
@@ -12,7 +13,13 @@ configure:
 	@mkdir -p out
 
 trimfile: configure
-	@$(CC) trimfile.cpp -o out/trimfile
+	@$(CC) trimfile.cpp -o out/trimfile && echo $(SUCCESS)
 
 trimfile_android: configure
-	@$(ACC) trimfile.cpp -o out/trimfile -std=c++11 -pie
+	@$(ACC) trimfile.cpp -o out/trimfile -std=c++11 -pie && echo $(SUCCESS)
+
+reader: configure
+	@$(CC) archive/reader.cpp -o out/reader -larchive && echo $(SUCCESS)
+
+extracter: configure
+	@$(CC) archive/extracter.cpp -o out/extracter -larchive && echo $(SUCCESS)
