@@ -33,6 +33,7 @@ void write_archive(string archivename, vector<string> files) {
 	a = archive_write_new();
 	archive_write_add_filter_gzip(a);
 	archive_write_set_format_cpio(a);
+	archive_write_set_format_by_name(a, "newc");
 	archive_write_open_filename(a, archivename.c_str());
 	for (string file : files) {
 		string filename = trim(file);
