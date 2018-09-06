@@ -40,25 +40,25 @@ vector<string> find_files(string dir, bool trim_parent, bool ignore_dirs) {
 
 void process_directory(string directory, vector<string>* files) {
     string dirToOpen = path + directory;
-	
+
     auto dir = opendir(dirToOpen.c_str());
-	
+
     path = dirToOpen + "/";
-	
+
     if(NULL == dir)
     {
 		fprintf(stderr,"error opening directory: %s\n", dirToOpen.c_str());
         return;
     }
-	
+
     auto entity = readdir(dir);
-	
+
     while(entity != NULL)
     {
         process_entity(entity, dirToOpen, files);
         entity = readdir(dir);
     }
-	
+
     path.resize(path.length() - 1 - directory.length());
     closedir(dir);
 }
@@ -66,11 +66,11 @@ void process_directory(string directory, vector<string>* files) {
 void process_entity(struct dirent* entity, string parent, vector<string>* files) {
 	if(entity->d_name[0] == '.')
 		return;
-	
+
 	string fullpath = parent + "/" + string(entity->d_name);
 	if (trim)
 		fullpath.erase(0, real_path.length());
-	
+
     if(entity->d_type == DT_DIR) {
         process_directory(string(entity->d_name), files);
 		if (!ignore)
@@ -78,7 +78,7 @@ void process_entity(struct dirent* entity, string parent, vector<string>* files)
     } else {
 		files->push_back(fullpath);
 	}
-	
+
 	return;
 }
 

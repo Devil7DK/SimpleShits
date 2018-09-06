@@ -29,7 +29,7 @@ void write_archive(string archivename, vector<string> files) {
 	char buff[8192];
 	int len;
 	int fd;
-	
+
 	a = archive_write_new();
 	archive_write_add_filter_gzip(a);
 	archive_write_set_format_cpio(a);
@@ -61,7 +61,7 @@ void write_archive(string archivename, vector<string> files) {
 				break;
 			case S_IFLNK:
 				link = readsymlink(file);
-				type = "symlink";				
+				type = "symlink";
 				archive_entry_set_filetype(entry, AE_IFLNK);
 				archive_entry_set_symlink(entry, link.c_str());
 				break;
@@ -72,20 +72,20 @@ void write_archive(string archivename, vector<string> files) {
 			case S_IFSOCK:
 				type = "socket";
 				archive_entry_set_filetype(entry, AE_IFSOCK);
-				break;				
+				break;
 			default:
 				type = "unknown";
 				archive_entry_set_filetype(entry, AE_IFREG);
 				break;
 		}
-		
+
 		if (strcmp(link.c_str(),"") != 0)
 			link = " -> \'" + link + "\'";
-		
+
 		printf("Adding " CLR_R "%s" CLR_N " to archive : " CLR_G "%s " CLR_Y "%s" CLR_N "\n", type.c_str(), filename.c_str(), link.c_str());
-		
+
 		archive_entry_set_perm(entry, st.st_mode & 07777);
-				
+
 		archive_write_header(a, entry);
 		if (archive_entry_size(entry) > 0) {
 			fd = open(file.c_str(), O_RDONLY);
@@ -98,7 +98,7 @@ void write_archive(string archivename, vector<string> files) {
 		}
 		archive_entry_free(entry);
 	}
-	
+
 	archive_write_close(a);
 	archive_write_free(a);
 }
@@ -112,10 +112,10 @@ int usage(const char* name) {
 int main(int argc, const char **argv) {
 	if (argc != 3)
 		return usage(argv[0]);
-	
+
 	string archivename = argv[1];
 	parentdir = realpath(argv[2], NULL);
-	
+
 	vector<string> files = find_files(parentdir, false, false);
 	write_archive(archivename, files);
 	return 0;
