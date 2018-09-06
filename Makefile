@@ -3,26 +3,29 @@
 CC=clang++
 ACC=$(STANDALONE_NDK)/bin/clang++
 SUCCESS="Successfully compiled..."
+ifdef DEBUG
+ACFLAGS= -g
+endif
 
-all: clean trimfile reader extracter
+all: clean trimfile reader extracter compresser
 
 clean:
 	@rm -rf out
 
 configure:
-	@mkdir -p outc
+	@mkdir -p out
 
 trimfile: configure
-	@$(CC) trimfile.cpp -o out/trimfile && echo $(SUCCESS)
+	@$(CC) $(ACFLAGS) trimfile.cpp -o out/trimfile && echo $(SUCCESS)
 
 trimfile_android: configure
-	@$(ACC) trimfile.cpp -o out/trimfile -std=c++11 -pie && echo $(SUCCESS)
+	@$(ACC) $(ACFLAGS) trimfile.cpp -o out/trimfile -std=c++11 -pie && echo $(SUCCESS)
 
 reader: configure
-	@$(CC) archive/reader.cpp -o out/reader -larchive && echo $(SUCCESS)
+	@$(CC) $(ACFLAGS) archive/reader.cpp -o out/reader -larchive && echo $(SUCCESS)
 
 extracter: configure
-	@$(CC) archive/extracter.cpp -o out/extracter -larchive && echo $(SUCCESS)
+	@$(CC) $(ACFLAGS) archive/extracter.cpp -o out/extracter -larchive && echo $(SUCCESS)
 
 compresser: configure
-	@$(CC) archive/compresser.cpp utils/dir.cpp -o out/compresser -larchive -I./ && echo $(SUCCESS)
+	@$(CC) $(ACFLAGS) archive/compresser.cpp utils/dir.cpp -o out/compresser -larchive -I./ && echo $(SUCCESS)
