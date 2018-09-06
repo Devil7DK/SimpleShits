@@ -2,6 +2,7 @@
 #include <string>
 #include <dirent.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include <sys/stat.h>
 
 #include "dir.hpp"
@@ -10,6 +11,7 @@ using namespace std;
 
 string path;
 bool trim;
+bool ignore;
 string real_path;
 
 void process_directory(string directory, vector<string>* files);
@@ -26,9 +28,10 @@ bool dir_exists(const char* path) {
 	return false;
 }
 
-vector<string> find_files(string dir, bool trim_parent) {
+vector<string> find_files(string dir, bool trim_parent, bool ignore_dirs) {
 	vector<string> files;
 	trim = trim_parent;
+	ignore = ignore_dirs;
 	path = realpath(dir.c_str(), NULL);
 	real_path = path + "/";
 	process_directory("", &files);
@@ -64,18 +67,27 @@ void process_entity(struct dirent* entity, string parent, vector<string>* files)
 	if(entity->d_name[0] == '.')
 		return;
 	
-    if(entity->d_type == DT_DIR)
-    {
-        process_directory(string(entity->d_name), files);	
-        return;
-    }
-
-    if(entity->d_type == DT_REG)
-    {
-		string fullpath = parent + "/" + string(entity->d_name);
-		if (trim)
-			fullpath.erase(0, real_path.length());
+	string fullpath = parent + "/" + string(entity->d_name);
+	if (trim)
+		fullpath.erase(0, real_path.length());
+	
+    if(entity->d_type == DT_DIR) {
+        process_directory(string(entity->d_name), files);
+		if (!ignore)
+			files->push_back(fullpath);
+    } else {
 		files->push_back(fullpath);
-        return;
-    }
+	}
+	
+	return;
+}
+
+string readsymlink(string path) {
+	char buf[1024];
+	ssize_t len;
+	if ((len = readlink(path.c_str(), buf, sizeof(buf)-1)) != -1) {
+		buf[len] = '\0';
+		return string(buf);
+	}
+	return "";
 }
